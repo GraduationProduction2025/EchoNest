@@ -1,16 +1,15 @@
 version: '3'
 services:
   web:
-    python3:
-      restart: always
-      build:
-        context: .
-        dockerfile: Dockerfile
-      container_name: 'python3'
-      working_dir: '/root/'
-      tty: true
-      volumes:
-        - ./src:/root/src
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: 'python3'
+    working_dir: '/root/'
+    tty: true
+    volumes:
+      - ./src:/root/src
   db:
     image: mysql:5.7
     environment:
