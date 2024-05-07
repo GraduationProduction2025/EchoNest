@@ -1,0 +1,26 @@
+version: '3'
+services:
+  web:
+    python3:
+      restart: always
+      build:
+        context: .
+        dockerfile: Dockerfile
+      container_name: 'python3'
+      working_dir: '/root/'
+      tty: true
+      volumes:
+        - ./src:/root/src
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: mysqldb
+      MYSQL_USER: user
+      MYSQL_PASSWORD: userpass
+      MYSQL_CHARACTER_SET_SERVER: utf8
+      MYSQL_COLLATION_SERVER: utf8_unicode_ci
+    command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci
+
+volumes:
+  db-data:
