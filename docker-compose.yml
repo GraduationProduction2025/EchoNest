@@ -1,15 +1,17 @@
-version: '3'
+version: "3"
+
 services:
   web:
-    restart: always
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: 'python3'
-    working_dir: '/root/'
-    tty: true
+    build: .
+    command: python3 manage.py runserver 0.0.0.0:8000
     volumes:
-      - ./src:/root/src
+      - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    restart: always
+
   db:
     image: mysql:5.7
     environment:
@@ -19,7 +21,23 @@ services:
       MYSQL_PASSWORD: userpass
       MYSQL_CHARACTER_SET_SERVER: utf8
       MYSQL_COLLATION_SERVER: utf8_unicode_ci
-    command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci
+    volumes:
+      - db-data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    platform: linux/amd64
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      MYSQL_DATABASE: mysqldb
+      MYSQL_ROOT_USER: rootuser
+      MYSQL_ROOT_PASSWORD: rootpass
+    ports:
+      - "3000:80"
+    volumes:
+      - ./phpmyadmin/sessions:/sessions
 
 volumes:
   db-data:
